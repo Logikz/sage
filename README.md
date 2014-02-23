@@ -38,8 +38,8 @@ To run the script using node from command line:
 This module is designed to find a particular repository on github and return the
  top 10 contributors for that repository.
 
- Unit Tests
- ----------
+Unit Tests
+----------
  * Unit tests were created using nodeunit( https://github.com/caolan/nodeunit ).  
  * HTTP server mocking was done with Nock ( https://github.com/pgte/nock )
 
