@@ -5,7 +5,8 @@ NodeJS project for Sage Interview by Nick Cuneo.
 
 This demo queries a Git repository and prints a report of the top 10 contributors for a particular repository.
 
-__Installation__
+Installation
+------------
 Clone/download the project from 
 	https://github.com/Logikz/sage.git
 
@@ -13,7 +14,8 @@ Install the required submodules
 	git submodule init
 	git submodule update
 
-__Usage__
+Usage
+-----
 To run the script using node from command line:
 	node sage <repository> <owner/user> [-t #] [-a]
 
@@ -30,7 +32,8 @@ Options:
 This module is designed to find a particular repository on github and return the
  top 10 contributors for that repository.
 
- __Unit Tests__
+ Unit Tests
+ ----------
  *Unit tests were created using nodeunit( https://github.com/caolan/nodeunit ).  
  *HTTP server mocking was done with Nock ( https://github.com/pgte/nock )
 
