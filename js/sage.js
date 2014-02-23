@@ -6,7 +6,7 @@ var TraceLevel = {
 }
 var traceLevel = TraceLevel.ERROR;
 
-function main(){
+var main = function (){
 	var options = require( "nomnom" )
 		.option( 'trace_level', {
 			abbr: 't',
@@ -31,13 +31,11 @@ function main(){
 		} )
 		.option( 'repository', {
 			help: 'The repository to list the top 10 contributors.',
-			position: 0,
-			required: true
+			position: 0
 		} )
 		.option( 'owner', {
 			help: 'The owner of the repository.',
-			position: 1,
-			required: true
+			position: 1
 		} )
 		.option( 'anonymous', {
 			abbr: 'a',
@@ -47,10 +45,15 @@ function main(){
 		.help( "This module is designed to find a particular repository on github and return the top 10 contributors for that repository." )
 		.parse()
 	dprint( TraceLevel.INFO, "Arguments successfully parsed" );
-	requestUrl( options.repository, options.owner, options.anonymous );
+	if(options.repository == null && options.owner == null ){
+		dprint( TraceLevel.ERROR , "Repository and owner are required.  For more information please run with -h option" );
+	} else {
+		requestUrl( options.repository, options.owner, options.anonymous );	
+	}
+	
 }
 
-function requestUrl( repository, owner, includeAnonymous ){
+var requestUrl = function ( repository, owner, includeAnonymous ){
 	host = "api.github.com"
 	var headers = {
 		"host": host,
@@ -74,7 +77,7 @@ function requestUrl( repository, owner, includeAnonymous ){
 	.on( 'error', handleError );
 }
 
-function handleResponse( response ) {
+var handleResponse = function ( response ) {
 	dprint( TraceLevel.DEBUG, "Got Response: " + response.statusCode );
 	dprint( TraceLevel.DEBUG, "Got Headers: " + JSON.stringify( response.headers) );
 	response.setEncoding( "utf8" );
@@ -88,20 +91,30 @@ function handleResponse( response ) {
 	} );
 }
 
-function handleError( error ){
+var handleError = function ( error ){
 	dprint( TraceLevel.ERROR, error.message );
 	dprint( TraceLevel.ERROR, error.stack );
 }
 
-function createReport( data ){
-	dprint( TraceLevel.INFO, "Creating Report" );
-	var contributors = JSON.parse( data )
-	for (var i = 0; i < contributors.length && i < 10; ++i ){
-		console.log( (i + 1) + ". " + contributors[i].login );
+var createReport = function ( data ){
+	if ( data != null || data != '') {
+		dprint( TraceLevel.INFO, "Creating Report" );
+		var contributors = JSON.parse( data )
+		var report = "";
+		for (var i = 0; i < contributors.length && i < 10; ++i ){
+			if ( contributors[ i ].type == 'User' ){
+				//regular user
+				report += ( i + 1 ) + ". " + contributors[ i ].login + "\t" + contributors[ i ].contributions + "\n";
+			} else {
+				//anonymous user
+				report += ( i + 1 ) + ". " + contributors[ i ].name + "\t" + contributors[ i ].contributions + "\n";
+			}			
+		}
+		console.log( report );
 	}
 }
 
-function dprint( message_level, message ){
+var dprint = function ( message_level, message ){
 	if( message_level <= traceLevel ){
 		console.log( getLevelString( message_level ) + message );
 	}
@@ -127,3 +140,6 @@ function getLevelString( message_level ){
 }
 
 main();
+
+exports.createReport = createReport;
+exports.handleResponse = handleResponse;
