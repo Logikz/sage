@@ -34,9 +34,71 @@ function main(){
 			position: 0,
 			required: true
 		} )
+		.option( 'owner', {
+			help: 'The owner of the repository.',
+			position: 1,
+			required: true
+		} )
+		.option( 'anonymous', {
+			abbr: 'a',
+			help: 'Include anonymous contributors',
+			flag: true
+		} )
 		.help( "This module is designed to find a particular repository on github and return the top 10 contributors for that repository." )
 		.parse()
 	dprint( TraceLevel.INFO, "Arguments successfully parsed" );
+	requestUrl( options.repository, options.owner, options.anonymous );
+}
+
+function requestUrl( repository, owner, includeAnonymous ){
+	host = "api.github.com"
+	var headers = {
+		"host": host,
+		"user-agent": "Logikz-Sage-Demo",
+		"content-length":0
+	};
+	
+	path = "/repos/" + owner + "/" + repository + "/contributors";
+	if ( includeAnonymous ){
+		path += '&anon=1';
+	}
+	options = {
+		host: host,
+		port: 443,
+		path: path,
+		headers: headers
+	};
+	var https = require( 'https' );
+	dprint( TraceLevel.DEBUG, "Requesting URL: " + host + path );
+	https.get( options, handleResponse )
+	.on( 'error', handleError );
+}
+
+function handleResponse( response ) {
+	dprint( TraceLevel.DEBUG, "Got Response: " + response.statusCode );
+	dprint( TraceLevel.DEBUG, "Got Headers: " + JSON.stringify( response.headers) );
+	response.setEncoding( "utf8" );
+	var data = "";
+	response.on( 'data', function ( chunk ){
+		dprint( TraceLevel.DEBUG, "Got chunk" );
+		data += chunk;
+	} );
+	response.on( 'end', function(){
+		createReport( data )
+	} );
+}
+
+function handleError( error ){
+	dprint( TraceLevel.ERROR, error.message );
+	dprint( TraceLevel.ERROR, error.stack );
+}
+
+function createReport( data ){
+	dprint( TraceLevel.INFO, "Creating Report" );
+	var contributors = JSON.parse( data )
+	for (var i = 0; i < contributors.length && i < 10; ++i ){
+		console.log( (i + 1) + ". " + contributors[i].login );
+	}
 }
 
 function dprint( message_level, message ){
