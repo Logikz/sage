@@ -19,8 +19,13 @@ var incompleteData = '[{"login":"nic';
 exports['Test Data with Anonymous data'] = function( test ){
 	test.expect( 1 );
 	var _log = console.log;
+	var format = "%02f. %-39s %10s\n";
 	console.log = function( str ) {
-		test.equal(str, '1. nick\t150\n2. logikz\t125\n3. Bob Smith\t100\n');
+		sprintf = require( 'sprintf-js' ).sprintf;
+		line1 = sprintf( format, 1, 'nick', 150 );
+		line2 = sprintf( format, 2, 'logikz', 125 );
+		line3 = sprintf( format, 3, 'Bob Smith', 100 );
+		test.equal(str, line1 + line2 + line3 );
 	}
 	sage.createReport( dataWithAnonymous );
 	console.log = _log;
@@ -30,8 +35,12 @@ exports['Test Data with Anonymous data'] = function( test ){
 exports['Test Data without Anonymous data'] = function( test ){
 	test.expect( 1 );
 	var _log = console.log;
+	var format = "%02f. %-39s %10s\n";
 	console.log = function( str ) {
-		test.equal(str, '1. nick\t150\n2. logikz\t125\n');
+		sprintf = require( 'sprintf-js' ).sprintf;
+		line1 = sprintf( format, 1, 'nick', 150 );
+		line2 = sprintf( format, 2, 'logikz', 125 );
+		test.equal(str, line1 + line2);
 	}
 	sage.createReport( dataWithoutAnonymous );
 	console.log = _log;

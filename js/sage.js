@@ -63,7 +63,7 @@ var requestUrl = function ( repository, owner, includeAnonymous ){
 	
 	path = "/repos/" + owner + "/" + repository + "/contributors";
 	if ( includeAnonymous ){
-		path += '&anon=1';
+		path += '?anon=1';
 	}
 	options = {
 		host: host,
@@ -101,15 +101,18 @@ var createReport = function ( data ){
 		dprint( TraceLevel.INFO, "Creating Report" );
 		var contributors = JSON.parse( data )
 		var report = "";
+		var sprintf = require( 'sprintf-js' ).sprintf;
+		var format = "%02f. %-39s %10s\n";
 		for (var i = 0; i < contributors.length && i < 10; ++i ){
 			if ( contributors[ i ].type == 'User' ){
 				//regular user
-				report += ( i + 1 ) + ". " + contributors[ i ].login + "\t" + contributors[ i ].contributions + "\n";
+				report += sprintf( format, i + 1, contributors[ i ].login, contributors[ i ].contributions );
 			} else {
 				//anonymous user
-				report += ( i + 1 ) + ". " + contributors[ i ].name + "\t" + contributors[ i ].contributions + "\n";
+				report += sprintf( format, i + 1, contributors[ i ].name, contributors[ i ].contributions );
 			}			
 		}
+
 		console.log( report );
 	}
 }
