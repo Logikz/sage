@@ -20,7 +20,7 @@ Install the required submodules
 
 Usage
 -----
-To run the script using node from command line:
+To run the script, change into the js directory and using node from command line:
 
 	node sage <repository> <owner/user> [-t #] [-a]
 
@@ -43,6 +43,6 @@ Unit Tests
  * Unit tests were created using nodeunit( https://github.com/caolan/nodeunit ).  
  * HTTP server mocking was done with Nock ( https://github.com/pgte/nock )
 
- To run the unit tests:
+ To run the unit tests, change into the js/test directory and run from command line:
  
- 	nodeunit sage-test.js
+ 	nodeunit sage-tester.js
